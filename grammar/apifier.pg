@@ -1,0 +1,270 @@
+get from /uri
+  auth
+  query
+    field1: required
+    field2: required
+    field3: required
+  end query
+  body
+  end body
+  success: json
+    array: required
+      name: required
+      description: optional
+    end array
+  end success
+  error: json
+    code: required, number
+    message: required, text
+  end error
+end get
+
+{
+  server: abc.com,
+  api: [
+    {
+      method: 'get', 'post', 'put', 'delete',
+      uri: '/api/resource',
+      query: {
+        field1: 'string',
+        field2: types.string().alphanumeric().max(30).required(),
+      },
+      body: {
+        format: 'form', 'json', 'xml',
+        data: {
+          field1: 'string',
+          field2: types.string().alphanumeric().max(30).required(),
+        }
+      },
+      response: {
+        format: 'json', 'xml', 'text', 'binary',
+        data: {
+          field1: 'string',
+          field2: types.string().alphanumeric().max(30).required(),
+        }
+      },
+      error: {
+        format: 'json', 'xml', 'text', 'binary',
+        data: {
+          code: types.integer(),
+          message: types.string(),
+        }
+      }
+    }
+  ]
+}
+
+api
+  = server:server methods:methods {return { server: server, methods: methods}; }
+
+server
+  = "server" ws ":" ws host:host _ { return host; }
+  / "" _ 
+
+host
+  = scheme:scheme hostname:hostname port:port { 
+    var s = "http://", h;
+    if(scheme) {
+      s = "https://";
+    }
+    if(port) {
+      h = s + hostname + ':' + port;
+    }else {
+      h = s + hostname;
+    }
+    return h;
+  }
+
+scheme
+  = "http://" {return false;}
+  / "https://" {return true;}
+  / "" { return false; }
+
+hostname
+  = field_str:field_str { return field_str; }
+
+port
+  = ":" nb:nb {return parseInt(nb);}
+  / ""
+
+methods
+  = methods:method+ 
+
+method 
+  = get:get _{ return get; }
+  / post:post _{ return post; }
+  / put:put _{ return put; }
+  / del:del _{ return del; }
+
+get
+  = "get" ws ":" ws URI:URI _ format:format? query:query? _ body:body? _ success:success? _ error:error? _  end "get" { return {method: "get", uri: URI, format: format, query: query, body: body, success: success, error: error}; }
+
+post
+  = "post" ws ":" ws URI:URI _ format:format? _ query:query? _ body:body? _ success:success? _ error:error? _  end "post" { return {method: "post", uri: URI, format: format, query: query, body: body, success: success, error: error}; }
+
+put
+  = "put" ws ":" ws URI:URI _ format:format? _ query:query? _ body:body? _ success:success? _ error:error? _  end "put" { return {method: "put", uri: URI, format: format, query: query, body: body, success: success, error: error}; }
+
+del
+  = "delete" ws ":" ws URI:URI _ format:format? _ query:query? _ body:body? _ success:success? _ error:error? _  end "delete" { return {method: "delete", uri: URI, format: format, query: query, body: body, success: success, error: error}; }
+
+query
+  = "query" _ fields:fields end "query" { return fields; }
+  / "" {return []} 
+
+body
+  = "body" _ fields:fields end "body" { return fields; }
+  / "" {return []} 
+
+success
+  = "success" _ nl _ fields:fields end "success" { return fields }
+  / "" {return []} 
+
+error
+  = "error" _ nl _ fields:fields end "error" { return fields }
+  / "" {return []} 
+
+types
+  = string_type
+  / number_type
+  / array_type
+  / object_type
+  
+string_type
+  = "string" string_opts _
+
+string_opts
+  = string_opts:string_opt*
+
+string_opt
+  = min
+  / max
+  / required
+
+number_type
+  = "number" number_opts _
+
+number_opts
+  = number_opts:number_opt*
+
+number_opt
+  = min
+  / max
+  / required
+
+array_type
+  = "array" array_opts _
+
+array_opts
+  = array_opts:array_opt*
+
+array_opt
+  = min
+  / max
+  / required
+
+object_type
+  = "object" object_opts _
+
+object_opts
+  = object_opts:object_opt*
+
+object_opt
+  = min
+  / max
+  / required
+
+
+min 
+  = ".min(" ws nb ws ")"
+
+max 
+  = ".max(" ws nb ws ")"
+
+required 
+  = ".required"
+  / ".optional"
+
+format
+  = "format" ws ":" ws "text" _ { return "text"; }
+  / "format" ws ":" ws "json" _ { return "json"; }
+  / "format" ws ":" ws "xml" _ { return "xml"; }
+  / "format" ws ":" ws "html" _ { return "html"; }
+  / "" { return "json" }
+
+
+fields
+  = fields:field*
+  
+
+field
+  = field_str:field_str ":" _ fdesc:fdesc _ nl _ { return {name: field_str , desc: fdesc}; }
+
+fdesc
+//  = "optional" { return {isRequired: false}; }
+//  / "required" { return {isRequired: true}; }
+  = string_type { return {isRequired: false}; }
+  / number_type { return {isRequired: false}; }
+  / array_type { return {isRequired: false}; }
+  / object_type { return {isRequired: false}; }
+
+URI
+  = string:string { return string; }
+
+end
+  = "end" ws
+
+field_str "field_str"
+  = field_chars:field_chars _ {return field_chars;}
+
+field_chars
+  = field_chars:field_char+ {return field_chars.join(""); }
+
+field_char
+  = [0-9a-zA-Z\\_\\-\\.] 
+
+string "string"
+  = chars:chars _ { return chars; }
+
+chars
+  = chars:char+ { return chars.join(""); }
+
+char
+  // In the original JSON grammar: "any-Unicode-character-except-"-or-\-or-control-character"
+  = [^"\\\0-\x1F\x7f]
+  / '\\"'  { return '"';  }
+  / "\\\\" { return "\\"; }
+  / "\\/"  { return "/";  }
+  / "\\b"  { return "\b"; }
+  / "\\f"  { return "\f"; }
+  / "\\n"  { return "\n"; }
+  / "\\r"  { return "\r"; }
+  / "\\t"  { return "\t"; }
+  / "\\u" digits:$(hexDigit hexDigit hexDigit hexDigit) {
+      return String.fromCharCode(parseInt(digits, 16));
+    }
+
+hexDigit
+  = [0-9a-fA-F]
+
+nb
+  = nb:digit+ { return nb.join(""); }
+
+digit
+  = [0-9]
+
+/* ===== Whitespace ===== */
+
+nl = newline*
+newline = [\r\n]
+
+ws "space" = space*
+space = [ \t]
+
+_ "whitespace"
+  = whitespace*
+
+// Whitespace is undefined in the original JSON grammar, so I assume a simple
+// conventional definition consistent with ECMA-262, 5th ed.
+whitespace
+  = [ \t\r\n]

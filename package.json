@@ -1,0 +1,19 @@
+{
+	"name": "apifier",
+	"description": "APIfier is an automatic API code generator.",
+	"version": "0.1.0",
+	"author": "Bachar Wehbi <me@bachwehbi.net>",
+	"homepage": "https://github.com/bachwehbi/apifier",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bachwehbi/apifier.git"
+	},
+    "engines": {
+        "node": ">=0.8"
+    },
+    "main": "app.js",
+    "dependencies": {
+        "ejs": "*",
+        "express": "*"
+    }
+}

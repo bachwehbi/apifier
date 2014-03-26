@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Bachar Wehbi (me@bachwehbi.net)">
+    <meta name="copyright" content="Copyright &copy; 2014 Bachar Wehbi">
+    <meta name="keywords" content="API, code generator, JavaScript">
+    <meta name="description" content="APIfier is a free automatic API code generator for JavaScript and nodejs.">
+    <title>APIfier</title>
+    <link rel="stylesheet" href="/css/apifier.css">
+    <link href="/vendor/codemirror-4.0/lib/codemirror.css" rel="stylesheet" >
+    <link href="/vendor/codemirror-4.0/theme/cobalt.css" rel="stylesheet" >
+  </head>
+  <body>
+    <div id="content">
+    <table id="columns">
+      <tr>
+        <td>
+          <table class="column" id="left-column">
+            <tr>
+              <td class="content-height">
+                <h2 class="suggestion top">
+                  <span class="step-number">1</span>
+                  <div class="step-title">Specify your API using APIfier formalism</div>
+                </h2>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="textarea-wrapper">
+                  <textarea class="code" id="input">server : abc.com
+
+get : get_uri
+  format: json
+  query
+    param1: string.min(3).max(8).required
+    param1: number.min(100).max(1000)
+    type: string
+  end query
+end get
+
+post : post_uri
+  format: json
+
+  query
+    param1: string.min(3).max(8).required
+    param1: number.min(100).max(1000)
+    type: string
+  end query
+
+  body
+    param1: string.min(3).max(8).required
+    param1: number.min(100).max(1000)
+    type: string
+  end body
+end post</textarea>
+                  <div class="tooltip">
+                    <div class="content">The input will be processed by the parser automatically as you type.</div>
+                    <div class="arrow"></div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="content-height">
+                <div id="parse-message" class="message disabled">Parser not available.</div>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <table class="column" id="right-column">
+            <tr>
+              <td class="content-height">
+                <h2 class="suggestion top">
+                  <span class="step-number">2</span>
+                  <div class="step-title">Copy or download generated code</div>
+                </h2>
+              </td>
+            </tr>
+            <tr>
+              <td class="content-height">
+                <div id="settings">
+                  <label for="parser-var">Module name:</label>
+                  <input type="text" id="parser-var" value="APIfier" disabled>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="textarea-wrapper">
+                  <textarea class="code" id='grammar'></textarea>
+                  <div class="tooltip">
+                    <div class="content">The parser will be generated automatically as you type.</div>
+                    <div class="arrow"></div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="content-height">
+                <a id="parser-download" class="disabled" href="#">Download Code</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    </div>
+<script src="/vendor/jquery/jquery.js"></script>
+<script src="/vendor/jsdump/jsDump.js"></script>
+<script src="/vendor/base64/webtoolkit.base64.js"></script>
+<script src="/js/parser.js"></script>
+<script src="/js/api2nodejs_client.js"></script>
+<script src="/js/apifier.js"></script>
+<script src="/vendor/jquery/jquery.js"></script>
+<script src="/vendor/codemirror-4.0/lib/codemirror.js"></script>
+<script src="/vendor/codemirror-4.0/mode/javascript/javascript.js"></script>
+<script src="/vendor/codemirror-4.0/mode/xml/xml.js"></script>
+  </body>
+</html>
