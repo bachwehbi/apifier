@@ -7,13 +7,16 @@ Generator of REST API code (client and server sides) from simple and intuitive d
 
 Still interested to see it in action (I warned you ;)
 
-    http://bachwehbi.net/apifier/
+[http://bachwehbi.net/apifier/](http://bachwehbi.net/apifier/)
 
 ## TODOs
 * Improve API description language
 * Generate server side code (Node.js to start with)
 * Ensure this is really working :)
 * Documentation
+
+## Credit
+This project use the awesome [pegjs](https://github.com/pegjs/pegjs) parser generator made by @dmajda 
 
 ## License
 MIT
