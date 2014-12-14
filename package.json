@@ -14,6 +14,6 @@
     "main": "app.js",
     "dependencies": {
         "ejs": "*",
-        "express": "*"
+        "express": "3.4.*"
     }
 }
