@@ -5,18 +5,8 @@ function appDepends(opts) {
   "    url = require('url'),\n" +
   "    joi = require('joi');\n" +
   "\n" +
-  "var hostname = " + (opts.hostname || "'localhost'") + ",\n"+
-  "    protocol = " + (opts.protocol || "'http'") + ",\n";
-  if(opts.port) {
-    str += "    port = " + opts.port + ";\n";
-  }else {
-    if(opts.protocol === 'https') {
-      str += "    port = 443;\n";
-    }else {
-      str += "    port = 80;\n";
-    }
-  }
-  str += "\n\n";
+  "var hostname = '" + (opts.server || "localhost") + "';\n";
+  str += "\n";
   return str;
 }
 
@@ -25,10 +15,7 @@ function appConstructorStr(opts) {
   var str = appname +
   " = function(options) {\n" +
   "\n" +
-  "    this.protocol = options.protocol || protocol;\n" +
-  "    if(this.protocol.toLowerCase() !== 'http' && this.protocol.toLowerCase() !== 'https') throw new Error('Unsupported protocol ' + this.protocol);\n" +
   "    this.hostname = options.hostname || hostname;\n" +
-  "    this.port = options.port || port;\n" +
   "\n" +
   "    this.validateData = function(params, schema, validator) {\n" +
   "        var err = null;\n" +
@@ -44,7 +31,7 @@ function appConstructorStr(opts) {
   "    }\n" +
   "\n" +
   "    this.postData = function(uri, query, body, callback) {\n" +
-  "        var url_str = this.protocol + '://' + this.hostname + ':' + this.port.toString() + uri;\n" +
+  "        var url_str = this.hostname + uri;\n" +
   "        if(query) url_str = url_str + '?' + querystring.stringify(query);\n" +
   "\n" +
   "        options = {\n" +
@@ -67,7 +54,7 @@ function appConstructorStr(opts) {
   "    }\n" +
   "\n" +
   "    this.getData = function(uri, query, callback) {\n" +
-  "        var url_str = this.protocol + '://' + this.hostname + ':' + this.port.toString() + uri;\n" +
+  "        var url_str = this.hostname + uri;\n" +
   "        if(query) url_str = url_str + '?' + querystring.stringify(query);\n" +
   "        options = {\n" +
   "            url: url.parse(url_str),\n" +
