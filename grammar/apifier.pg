@@ -1,65 +1,9 @@
-get from /uri
-  auth
-  query
-    field1: required
-    field2: required
-    field3: required
-  end query
-  body
-  end body
-  success: json
-    array: required
-      name: required
-      description: optional
-    end array
-  end success
-  error: json
-    code: required, number
-    message: required, text
-  end error
-end get
-
-{
-  server: abc.com,
-  api: [
-    {
-      method: 'get', 'post', 'put', 'delete',
-      uri: '/api/resource',
-      query: {
-        field1: 'string',
-        field2: types.string().alphanumeric().max(30).required(),
-      },
-      body: {
-        format: 'form', 'json', 'xml',
-        data: {
-          field1: 'string',
-          field2: types.string().alphanumeric().max(30).required(),
-        }
-      },
-      response: {
-        format: 'json', 'xml', 'text', 'binary',
-        data: {
-          field1: 'string',
-          field2: types.string().alphanumeric().max(30).required(),
-        }
-      },
-      error: {
-        format: 'json', 'xml', 'text', 'binary',
-        data: {
-          code: types.integer(),
-          message: types.string(),
-        }
-      }
-    }
-  ]
-}
-
 api
   = server:server methods:methods {return { server: server, methods: methods}; }
 
 server
   = "server" ws ":" ws host:host _ { return host; }
-  / "" _ 
+  / "" _ {return null;}
 
 host
   = scheme:scheme hostname:hostname port:port { 
