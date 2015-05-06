@@ -16,7 +16,7 @@ Still interested to see it in action (I warned you ;)
 * Documentation
 
 ## Credit
-This project use the awesome [pegjs](https://github.com/pegjs/pegjs) parser generator made by @dmajda 
+This project uses the awesome [pegjs](https://github.com/pegjs/pegjs) parser generator made by @dmajda 
 
 ## License
 MIT
